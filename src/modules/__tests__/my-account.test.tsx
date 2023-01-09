@@ -1,8 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 
 import MyAccount from '../my-account';
 
-it('With the name of the account owner', () => {
+jest.mock('../hooks/useAccount', () => () => ({ data: { id: 1, name: 'Trond', email: null } }));
+
+it('renders with the name of the account owner', async () => {
   render(<MyAccount />);
-  expect(screen.getByText('Hello Trond')).toBeInTheDocument();
+  await waitFor(() => expect(screen.getByText('Hello Trond')).toBeInTheDocument());
 });
