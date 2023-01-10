@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 
-import MyAccount from '../my-account';
+import MyAccount from '..';
 
 jest.mock('../hooks/useAccount', () => () => ({ data: { id: 1, name: 'Trond', email: null } }));
 
