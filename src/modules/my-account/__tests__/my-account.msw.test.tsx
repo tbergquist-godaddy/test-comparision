@@ -1,34 +1,30 @@
+import { Suspense } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { rest } from 'msw';
 
 import MyAccount from '..';
-import { Suspense } from 'react';
+import { server } from '../../../test/server';
 
 let queryClient;
-let windowFetch;
 beforeEach(() => {
   queryClient = new QueryClient();
-  windowFetch = window.fetch;
-  // @ts-ignore: we want to mock it
-  window.fetch = jest.fn(() =>
-    Promise.resolve({
-      json: () => {
-        return Promise.resolve({
+});
+
+it('renders with the name of the account owner', async () => {
+  server.use(
+    rest.get('http://localhost:3000/api/account', (_, res, ctx) => {
+      return res(
+        ctx.json({
           id: 1,
           name: 'Trond',
           address: null,
           email: null
-        });
-      }
+        })
+      );
     })
   );
-});
 
-afterEach(() => {
-  window.fetch = windowFetch;
-});
-
-it('renders with the name of the account owner', async () => {
   render(
     <QueryClientProvider client={queryClient}>
       <Suspense fallback='loading'>
@@ -36,5 +32,6 @@ it('renders with the name of the account owner', async () => {
       </Suspense>
     </QueryClientProvider>
   );
+
   await waitFor(() => expect(screen.getByText('Hello Trond')).toBeInTheDocument());
 });
