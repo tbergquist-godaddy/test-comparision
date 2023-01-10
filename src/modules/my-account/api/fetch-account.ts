@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch';
+// import fetch from 'isomorphic-fetch';
 import { z } from 'zod';
 
 const userSchema = z.object({
